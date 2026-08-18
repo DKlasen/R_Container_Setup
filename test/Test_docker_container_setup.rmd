@@ -1,0 +1,84 @@
+---
+title: "Test für Dockter container"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+library(patchwork)
+library(rstatix)
+```
+
+```{r setup, include=FALSE}
+
+iris.df <- read.csv("/workspaces/R/test/iris.csv")
+head(iris.df)
+```
+
+# Test dplyr
+```{r setup, include=FALSE}
+iris.df %>%
+  group_by(species) %>%
+  summarise(across(everything(), list(mean = \(x) mean(x, na.rm = TRUE), 
+                                      sd = \(x) sd(x, na.rm = TRUE))))
+```
+
+# Test rstatix
+```{r setup, include=FALSE}
+iris.df %>% t_test(petal_length ~ species)
+```
+
+# Test data.table
+```{r setup, include=FALSE}
+# 1. Einen data.table aus dem bekannten iris-Dataframe erstellen
+dt <- as.data.table(iris)
+
+# 2. Zeilen filtern (analog zu filter() in dplyr): 
+# Alle Blumen, bei denen Sepal.Length größer als 5.0 ist
+filtered_dt <- dt[Sepal.Length > 5.0]
+head(filtered_dt)
+
+# 3. Neue Spalte hinzufügen (mit dem := Operator, der sehr effizient im Speicher arbeitet)
+dt[, Sepal.Ratio := Sepal.Length / Sepal.Width]
+head(dt)
+
+# 4. Aggregieren / Gruppieren (analog zu group_by + summarise):
+# Berechne den Mittelwert von Sepal.Length und Sepal.Width pro Spezies
+result <- dt[, .(
+  Mean_Sepal_Length = mean(Sepal.Length),
+  Mean_Sepal_Width = mean(Sepal.Width)
+), by = Species]
+
+print(result)
+```
+
+# Test ggplot2
+```{r setup, include=FALSE}
+ggplot(iris.df, aes(x = petal_length, y = petal_width, color = species)) +
+  geom_point() +
+  labs(title = "Petal Length vs Petal Width by Species",
+       x = "Petal Length",
+       y = "Petal Width") +
+  theme_minimal()
+``` 
+
+# Test patchwork
+```{r setup, include=FALSE}
+p1 <- ggplot(iris.df, aes(x = petal_length, y = petal_width, color = species)) +
+  geom_point() +
+    labs(title = "Petal Length vs Petal Width by Species",
+       x = "Petal Length",
+       y = "Petal Width") +
+  theme_minimal()
+
+p2 <- ggplot(iris.df, aes(x = sepal_length, y = sepal_width, color = species)) +
+  geom_point() +
+    labs(title = "Sepal Length vs Sepal Width by Species",
+       x = "Sepal Length",
+       y = "Sepal Width") +
+  theme_minimal()   
+
+p1 + p2
+```

@@ -1,0 +1,17 @@
+{
+    "name": "R Docker container",
+    "build": {
+        "dockerfile": "../docker/Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "reditorsupport.r"
+            ]
+        }
+    },
+    "containerEnv": {
+        "DISPLAY": ""
+    }
+}

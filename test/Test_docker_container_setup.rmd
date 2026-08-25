@@ -9,6 +9,10 @@ library(ggplot2)
 library(data.table)
 library(patchwork)
 library(rstatix)
+library(flextable)
+library(wrappedtools)
+library(GGally)
+library(ggbeeswarm)
 ```
 
 ```{r setup, include=FALSE}
@@ -21,13 +25,14 @@ head(iris.df)
 ```{r setup, include=FALSE}
 iris.df %>%
   group_by(species) %>%
-  summarise(across(everything(), list(mean = \(x) mean(x, na.rm = TRUE), 
-                                      sd = \(x) sd(x, na.rm = TRUE))))
+  summarise(across(everything(), meansd)) %>%
+  flextable() %>%
+  autofit()
 ```
 
 # Test rstatix
 ```{r setup, include=FALSE}
-iris.df %>% t_test(petal_length ~ species)
+iris.df %>% t_test(petal_length ~ species) %>% mutate(p.adj = formatP(p.adj, mark = TRUE), p = formatP(p, mark = TRUE)) %>% flextable() %>% autofit()
 ```
 
 # Test data.table
@@ -51,7 +56,7 @@ result <- dt[, .(
   Mean_Sepal_Width = mean(Sepal.Width)
 ), by = Species]
 
-print(result)
+result %>% flextable() %>% autofit()
 ```
 
 # Test ggplot2
@@ -63,6 +68,14 @@ ggplot(iris.df, aes(x = petal_length, y = petal_width, color = species)) +
        y = "Petal Width") +
   theme_minimal()
 ``` 
+
+```{r setup, include=FALSE}
+iris.df %>%
+  ggplot(aes(x =species, y = petal_length, color = species)) +
+  geom_violin(trim = FALSE) +
+  geom_beeswarm()
+
+```
 
 # Test patchwork
 ```{r setup, include=FALSE}
@@ -81,4 +94,10 @@ p2 <- ggplot(iris.df, aes(x = sepal_length, y = sepal_width, color = species)) +
   theme_minimal()   
 
 p1 + p2
+```
+
+# Test GGally
+```{r setup, include=FALSE}
+ggpairs(iris.df, aes(color = species))
+
 ```

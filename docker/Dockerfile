@@ -23,7 +23,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # Bioconductor und Standard-Pakete PLUS rmarkdown und knitr installieren
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
     R -e "BiocManager::install(update = FALSE, ask = FALSE)" && \
-    R -e "BiocManager::install(c('tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr'), update = FALSE)"
+    R -e "BiocManager::install(c('tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'wrappedtools','ggbeeswarm','GGally','flextable'), update = FALSE)"
 
 # ... restlicher Teil der Dockerfile ...
 

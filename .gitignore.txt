@@ -1,0 +1,16 @@
+
+# Projekt-spezifische Ordner (Ignorieren von großen oder lokalen Daten/Ausgaben)
+Data/
+Output/
+Library/
+
+# R-spezifische temporäre Dateien und Cache
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj.user
+.Rproj.user/
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db

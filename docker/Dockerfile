@@ -1,11 +1,10 @@
 FROM rocker/r-ver:4.4.0
 
-# Build-Argument für das gewünschte Datum definieren (z. B. 2026-06-01 oder 'latest')
-ARG BUILD_DATE=latest
+ARG BUILD_DATE=2024-09-10
 
-# System-Abhängigkeiten aktualisieren und benötigte Bibliotheken installieren
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
+    build-essential \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
@@ -19,34 +18,35 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     libjpeg-dev \
     libgl1 \
     libglib2.0-0 \
+    libhdf5-dev \
+    libwebp-dev \
+    libglpk40 \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Dynamisches Repository je nach Datum setzen:
-# Wenn BUILD_DATE auf 'latest' steht, wird der Standard-CRAN-Mirror genutzt, 
-# ansonsten der P3M-Snapshot für das spezifische Datum.
+# 1. Standard-CRAN-Pakete installieren
 RUN if [ "$BUILD_DATE" = "latest" ]; then \
-        REPO="https://cloud.r-project.org"; \
+        REPO="https://packagemanager.posit.co/cran/__linux__/jammy/latest"; \
     else \
-        REPO="https://packagemanager.posit.co/cran/$BUILD_DATE"; \
+        REPO="https://packagemanager.posit.co/cran/__linux__/jammy/$BUILD_DATE"; \
     fi && \
     echo "Using R repository: $REPO" && \
-    R -e "install.packages('BiocManager', repos='$REPO')" && \
-    R -e "BiocManager::install(update = FALSE, ask = FALSE, site_repository='$REPO')" && \
-    R -e "BiocManager::install(c('tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'wrappedtools','ggbeeswarm','GGally','flextable'), update = FALSE, repos='$REPO')"
+    R -e "pkgs <- c('tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'ggbeeswarm', 'GGally', 'flextable', 'remotes'); install.packages(pkgs, repos='$REPO')"
 
-# Kopiert die datumsabhängige requirements-Datei (z. B. requirements-2026-06-01.txt)
+# 2. 'wrappedtools' von GitHub installieren
+RUN R -e "remotes::install_github('abusjahn/wrappedtools')"
+
 COPY docker/requirements-${BUILD_DATE}.txt /tmp/requirements.txt
 
-# Installiert zusätzliche Pakete aus der requirements.txt über das zeitpunktgenaue Repository
+# 3. Zusätzliche Pakete (wie Seurat) aus der requirements.txt installieren
 RUN if [ -s /tmp/requirements.txt ]; then \
         if [ "$BUILD_DATE" = "latest" ]; then \
-            REPO="https://cloud.r-project.org"; \
+            REPO="https://packagemanager.posit.co/cran/__linux__/jammy/latest"; \
         else \
-            REPO="https://packagemanager.posit.co/cran/$BUILD_DATE"; \
+            REPO="https://packagemanager.posit.co/cran/__linux__/jammy/$BUILD_DATE"; \
         fi && \
         R -e "packages <- readLines('/tmp/requirements.txt'); \
               packages <- trimws(packages); \
               packages <- packages[packages != '' & !grepl('^#', packages)]; \
-              BiocManager::install(packages, update = FALSE, ask = FALSE, repos='$REPO')"; \
+              install.packages(packages, repos='$REPO')"; \
     fi

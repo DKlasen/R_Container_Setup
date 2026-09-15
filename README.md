@@ -7,7 +7,7 @@ Wichtig nur die Packet in requiremnt.txt können per Version festgelegt werden.
 Von den Default Packeten 'tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'wrappedtools','ggbeeswarm','GGally','flextable' werden die aktuellesten Versionen geladen. 
 Damit kann auch in Zukunft eine Kompatibilität gewährleistet werden.
 Weiterhin sollte der Container einen spezifischen Namen erhalten dies geschieht .devcontainer/devcontainer.json
-In Test befindet sich der iris.csv Datensatz sowie ein Script, welches zum testen der default Packete pandas numpy matplotlib ipykernel dient.
+In Test befindet sich der iris.csv Datensatz sowie ein Script, welches zum testen der default Packete  'tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'wrappedtools','ggbeeswarm','GGally','flextable' dient.
 Die Basis Struktur ist Data für sämtliche Input Daten. Output für Plots und Ergebnis Tabellen. Skripts für gespeicherte Skripte.
 Wichtig für die Versionkontrolle werden lediglich die Skripte und der Test Ordner gepushed.
 
@@ -20,6 +20,6 @@ Please note that only the packages listed in `requirements.txt` can be specified
 The latest versions of the default packages ‘tidyverse’, ‘rstatix’, ‘data.table’, ‘patchwork’, ‘ggplot2’, ‘rmarkdown’, ‘knitr’, ‘stringr’, ‘wrappedtools’, ‘ggbeeswarm’, ‘GGally’ and ‘flextable’ are loaded.
 This ensures compatibility in the future.
 Furthermore, the container should be given a specific name; this is done in .devcontainer/devcontainer.json
-The ‘test’ folder contains the ‘iris.csv’ dataset and a script used to test the default packages pandas, numpy, matplotlib and ipykernel.
+The ‘test’ folder contains the ‘iris.csv’ dataset and a script used to test the default packages  'tidyverse', 'rstatix', 'data.table', 'patchwork', 'ggplot2', 'rmarkdown', 'knitr', 'stringr', 'wrappedtools','ggbeeswarm','GGally','flextable'
 The basic structure is: ‘Data’ for all input data; ‘Output’ for plots and results tables; and ‘Scripts’ for saved scripts.
 For version control purposes, only the scripts and the ‘Test’ folder are pushed.

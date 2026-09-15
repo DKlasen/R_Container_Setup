@@ -1,0 +1,15 @@
+# Default Packages
+tidyverse
+wrappedtools
+rstatix
+data.table
+patchwork
+ggplot2
+rmarkdown
+knitr
+stringr
+ggbeeswarm
+GGally
+flextable
+
+# Additional
